@@ -1,0 +1,35 @@
+# Environment variables
+.env
+.env.local
+
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build / dist
+dist/
+build/
+
+# Coverage
+coverage/
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# Uploads (agar user files hain)
+uploads/
+
+# Optional: lock files (agar team me consistency nahi chahiye)
+# package-lock.json
+# yarn.lock

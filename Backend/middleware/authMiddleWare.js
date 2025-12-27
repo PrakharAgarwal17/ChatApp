@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken"
-import userModel from "../models/user"
+import userModel from "../models/user.js"
 
-export default async function isloggedIn(req,res,next){
+export async function isloggedIn(req,res,next){
     try{
-        const token = req.cookies.token || req.headers.authorization.split(" ")[1]
+        const token = req.cookies.token || req.headers.authorization?.split(" ")[1]
         if(!token){
             return res.status(401).json({message:"Unauthorised user"})
         }

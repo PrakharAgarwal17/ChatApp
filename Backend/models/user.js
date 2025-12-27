@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const UserAuth=mongoose.Schema({
+const UserAuth=new mongoose.Schema({
     name:{
         type:String,
         required:true
@@ -13,7 +13,11 @@ const UserAuth=mongoose.Schema({
     password:{
         type:String,
         required:true
-    }
+    },
+    rooms:[{
+        type:mongoose.Types.ObjectId,
+        ref:"room"
+    }]
 })
 
 export default mongoose.model("User",UserAuth)

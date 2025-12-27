@@ -1,4 +1,4 @@
-import bcrypt, { hash } from "bcrypt"
+import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import userModel from "../models/user.js"
 import nodemailer from "nodemailer"

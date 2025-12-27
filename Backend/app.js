@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser"
 import dotenv from "dotenv"
 import cors from "cors"
 import auth from "./routes/authRoutes.js"
+import room from "./routes/roomRoute.js"
 
 const app=express()
 
@@ -28,5 +29,6 @@ app.get('/',(req,res)=>{
 })
 
 app.use("/api/auth",auth)
+app.use("/api/room",room)
 
 app.listen(3000)

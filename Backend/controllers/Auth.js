@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
-import userModel from "../models/user.js"
+import userModel from "../models/userModel.js"
 import nodemailer from "nodemailer"
 
 const otpStorage = new Map()

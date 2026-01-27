@@ -1,6 +1,7 @@
-import roomModel from "../models/room.js"
-import userModel from "../models/user.js"
+import roomModel from "../models/roomModel.js"
+import userModel from "../models/userModel.js"
 import axios from "axios"
+
 
 export async function createRoom(req,res){
    try{
@@ -10,7 +11,7 @@ export async function createRoom(req,res){
     return res.status(401).json({message:"Unauthorised user"})
    }
 
-   const roomName=req.body
+   const {roomName}=req.body
    if(typeof roomName!=="string"){
     return res.status(400).json({message:"Invalid type of room name"})
    }
@@ -44,6 +45,7 @@ export async function createRoom(req,res){
       return res.status(400).json({message:"Room joining unsuccessful"})
    }
 
+
    return res.status(201).json({message:`Room Created Successfully , your room code is ${roomCode}`})
 
 }catch(err){
@@ -74,7 +76,7 @@ export async function joinRoom(req,res){
        }
 
        const userRooms = await userModel.findOneAndUpdate({_id:userId},{
-        $push:{
+        $addToSet:{
             rooms:foundRoom._id
         }
        },{new:true})
@@ -105,6 +107,12 @@ export async function leaveRoom(req,res){
        const findRoom=await roomModel.findOneAndUpdate({_id:roomId},{
         $pull:{
             members:userId
+        }
+       },{new:true})
+
+       const userRoom=await userModel.findOneAndUpdate({_id:userId},{
+        $pull:{
+            rooms:roomId
         }
        },{new:true})
         

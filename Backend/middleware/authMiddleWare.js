@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import userModel from "../models/user.js"
+import userModel from "../models/userModel.js"
 
 export async function isloggedIn(req,res,next){
     try{

@@ -1,9 +1,14 @@
 import gsap from "gsap"
 import { useEffect } from "react"
 import { Link } from "react-router-dom"
+import { useRef } from "react"
 
 export function Landing() {
   const title = "Converza"
+  
+  const reference=useRef(null)
+  const hoverTl=useRef(null)
+  
   useEffect(() => {
     const tl = gsap.timeline()
     tl.to(".beginning", {
@@ -36,8 +41,18 @@ export function Landing() {
       ease: "power2.inOut",
       yoyo: true
     })
-
   }, [])
+
+  useEffect(() => {
+  hoverTl.current = gsap.timeline({ paused: true })
+    .to(reference.current, {
+      scale: 1.05,
+      opacity: 0.9,
+      duration: 0.4,
+      ease: "power3.out"
+    })
+}, [])
+
 
 
   return (
@@ -93,7 +108,7 @@ export function Landing() {
 
         </div>
 
-        <div class=" right-side bg-gradient-to-br from-black bg-cover m-10 opacity-[0.7] rounded-3xl  bg-center bg-[url('https://imgs.search.brave.com/ZA9_Xym2LGKzT1hc4B9tm_GKWPNE0P0LHCzWe5LNvT8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMjE1/NzcwMzYyOC92aWRl/by9sYXB0b3AtcmVh/ZGluZy1hbmQtbWFu/LXR5cGluZy1pbi1v/ZmZpY2Utd2l0aC1v/bmxpbmUtcmVzZWFy/Y2gtZm9yLWNvZGlu/Zy1pdC1vci1wcm9n/cmFtbWluZy5qcGc_/cz02NDB4NjQwJms9/MjAmYz15RW9ZSkRw/dmpvdVE3MFhTQzNE/NXE1OTAxOU5wOGNH/ZDgxem1YaTVTcl9j/PQ')] via-gray-950 to-emerald-950/30 hidden md:flex items-center justify-center relative overflow-hidden">
+        <div class=" right-side bg-gradient-to-br from-black bg-cover m-10 opacity-[0.7] rounded-3xl  bg-center bg-[url('https://imgs.search.brave.com/li1SEhl_S2ToPKCpIg0QxlIt75-Ze5S5jrT_aHlYINM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMjA4/MDQwNTM0OC9waG90/by9wb3J0cmFpdC1v/Zi1hbi1vbGRlci13/b21hbi1pbi1oZXIt/cGFqYW1hcy10ZXh0/aW5nLW9uLWhlci1t/b2JpbGUtcGhvbmUt/aW4tdGhlLW1vcm5p/bmcuanBnP3M9NjEy/eDYxMiZ3PTAmaz0y/MCZjPUZ4R3I0ZEJ0/enB3VUs3b1F0amw2/QlYzc1dWNVJsZkp5/cS14RkZtNFg5V0E9')] via-gray-950 to-emerald-950/30 hidden md:flex items-center justify-center relative overflow-hidden" ref={reference} onMouseEnter={()=>hoverTl.current.play()} onMouseLeave={()=>hoverTl.current.reverse()}>
           <div class="absolute inset-0 opacity-10 pointer-events-none">
             <div class="absolute -left-20 -top-20 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
             <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl"></div>

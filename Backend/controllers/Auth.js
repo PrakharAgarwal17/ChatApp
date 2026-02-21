@@ -1,36 +1,39 @@
-import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
-import userModel from "../models/userModel.js"
-import nodemailer from "nodemailer"
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import userModel from "../models/userModel.js";
+import nodemailer from "nodemailer";
 
-const otpStorage = new Map()
+const otpStorage = new Map();
 
 export async function SignUp(req, res) {
   try {
-    const { name, email, password, confirmPassword } = req.body
+    const { name, email, password, confirmPassword } = req.body;
 
     if (!name || !password || !email || !confirmPassword) {
-      res.json(404).json({ message: "All the fields must be filled in order to continue furthur" })
+      res
+        .json(404)
+        .json({
+          message: "All the fields must be filled in order to continue furthur",
+        });
     }
 
     if (password != confirmPassword) {
-      return res.status(404).json({ message: "Password doesnt match" })
+      return res.status(404).json({ message: "Password doesnt match" });
     }
-    const hashedPassword = await bcrypt.hash(password, 10)
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const existingUser = await userModel.findOne({ email })
+    const existingUser = await userModel.findOne({ email });
 
     if (existingUser) {
-      return res.status(400).json({ message: "Email already registered" })
+      return res.status(400).json({ message: "Email already registered" });
     }
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     otpStorage.set(email, {
       otp,
       name,
       email,
-      hashedPassword
-    })
-
+      hashedPassword,
+    });
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -40,7 +43,7 @@ export async function SignUp(req, res) {
       },
     });
     const info = await transporter.sendMail({
-      from: '"convo_chat" <Convoo-chat@gmail.com>',
+      from: '"converza" <Converza@gmail.com>',
       to: email,
       subject: "Verify OTP to continue",
       text: "Your OTP is :<br> ", // Plain-text version of the message
@@ -59,7 +62,7 @@ export async function SignUp(req, res) {
             ">
               <tr>
                 <td style="text-align: center;">
-                  <h2 style="color: #333;">Billing System</h2>
+                  <h2 style="color: #333;">Converza</h2>
                   <p style="color: #555; font-size: 14px;">
                     Your OTP is
                   </p>
@@ -100,18 +103,16 @@ export async function SignUp(req, res) {
     </div>`, // HTML version of the message
     });
 
-    return res.status(200).json({ message: "OTP sent successfully" })
-
+    return res.status(200).json({ message: "OTP sent successfully" });
   } catch (err) {
-    return res.status(500).json({ message: err })
+    return res.status(500).json({ message: err });
   }
 }
 
-
 export async function VerifyOtp(req, res) {
   try {
-    const { email, otp } = req.body
-    const sentOTP = otpStorage.get(email)
+    const { email, otp } = req.body;
+    const sentOTP = otpStorage.get(email);
 
     if (!sentOTP) {
       return res.status(400).json({ message: "OTP expired or invalid email" });
@@ -121,48 +122,64 @@ export async function VerifyOtp(req, res) {
       await userModel.create({
         name: sentOTP.name,
         email: sentOTP.email,
-        password: sentOTP.hashedPassword
-      })
+        password: sentOTP.hashedPassword,
+      });
 
-      const user = await userModel.findOne({ email })
+      const user = await userModel.findOne({ email });
       if (!user) {
-        return res.status(400).json({ message: "User not created" })
+        return res.status(400).json({ message: "User not created" });
       }
-      const token = jwt.sign({ email, id: user._id.toString() }, process.env.JWT_SECRET,{expiresIn:"7d"})
-      res.cookie("token", token, {
-        httpOnly: true,
-        sameSite: "strict"
-      })
+      const token = jwt.sign(
+        { email, id: user._id.toString() },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" },
+      );
       otpStorage.delete(email);
-      return res.status(200).json({ message: "User created successfully" })
-
-    }
-    else {
-      return res.status(404).json({ message: "OTP doesnt match" })
+      return res.status(200).json({
+        message: "User created successfully",
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          rooms: user.rooms,
+        },
+      });
+    } else {
+      return res.status(404).json({ message: "OTP doesnt match" });
     }
   } catch (err) {
-    return res.status(500).json({ message: err })
+    return res.status(500).json({ message: err });
   }
 }
 
 export async function SignIn(req, res) {
   try {
-    const { email, password } = req.body
-    const ExistingUser = await userModel.findOne({ email })
+    const { email, password } = req.body;
+    const ExistingUser = await userModel.findOne({ email });
     if (!ExistingUser) {
-      return res.status(400).json({ message: "Incorrect Email or Password" })
+      return res.status(400).json({ message: "Incorrect Email or Password" });
     }
-    const isMatch = await bcrypt.compare(password, ExistingUser.password)
+    const isMatch = await bcrypt.compare(password, ExistingUser.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Incorrect Email or Password" })
+      return res.status(400).json({ message: "Incorrect Email or Password" });
     }
-    const token = jwt.sign({ email, id: ExistingUser._id.toString() }, process.env.JWT_SECRET,{ expiresIn: "7d" })
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "strict"
-    })
-    return res.status(200).json({ message: "Sign In complete" })
+    const token = jwt.sign(
+      { email, id: ExistingUser._id.toString() },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+    );
+    return res.status(200).json({
+      message: "Sign In complete",
+      token,
+      user: {
+        id: ExistingUser._id,
+        name: ExistingUser.name,
+        email: ExistingUser.email,
+        rooms: ExistingUser.rooms,
+      },
+    });
   } catch (err) {
-    return res.status(500).json({ message: err })
+    return res.status(500).json({ message: err });
   }
 }

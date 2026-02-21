@@ -1,21 +1,60 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState,useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import gsap from "gsap";
 
 export function SignIn() {
   const [email,setEmail]=useState('')
   const [password, setPassword] = useState('');
-
-  function signin(e) {
+  const [error,setError]=useState('')
+  const [code,setCode]=useState('')
+  const navigate=useNavigate()
+  async function signin(e) {
     console.log(email,password)
     e.preventDefault()
+    const response=await axios.post("http://localhost:3000/api/auth/signin",{email,password})
+    if(response.status==200){
+      setError('Login Successful')
+      setCode(200)
+      localStorage.clear()
+      localStorage.setItem("token",response.data.token)
+      localStorage.setItem("user",JSON.stringify(response.data.user))
+      setTimeout(()=>{
+        navigate('/home')
+      },1500)
+    }
+
+    else{
+      setError(response.data)
+      setCode(response.status)
+    }
   }
 
+  useEffect(()=>{
+    if(error) return
+    
+    gsap.to(".msg",{
+       opacity:0,
+       yoyo:true,
+       duration:1.5,
+       ease:"power1.inOut"
+    })
+  },[error])
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-950 to-black relative overflow-hidden px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-950 via-gray-950 to-black relative overflow-hidden px-4 sm:px-6 lg:px-8">
       {/* Background ambient glows - greenish */}
       <div className="absolute -top-40 -left-60 w-[600px] h-[600px] bg-emerald-600/10 rounded-full blur-3xl animate-pulse-slow"></div>
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-teal-600/10 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
+      <div className="msg absolute bottom-0 right-0 w-[500px] h-[500px] bg-teal-600/10 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
 
+        {error && (
+            <div
+              className={`msg mb-6 p-2 w-[400px] text-center text-white rounded-md transition-all duration-300
+                                 ${code == 200 ? "bg-green-600" : "bg-red-600"}`}
+            >
+              {error}
+            </div>
+          )}
       <div className="relative w-full max-w-md z-10">
         <div className="rounded-3xl bg-gray-900/60 backdrop-blur-2xl border border-gray-800/80 shadow-2xl shadow-black/70 p-9 md:p-11">
           {/* Header */}

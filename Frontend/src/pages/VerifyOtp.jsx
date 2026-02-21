@@ -1,11 +1,14 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import gsap from "gsap"
+import {useNavigate} from "react-router-dom"
 
 export function VerifyOtp() {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [code, setCode] = useState("");
+  const navigate=useNavigate()
 
   const HandleSubmit = async (e) => {
     e.preventDefault();
@@ -18,6 +21,12 @@ export function VerifyOtp() {
       if (status == 200) {
         setCode(status);
         setError("Done Successfully");
+        localStorage.clear()
+        localStorage.setItem("token",response.data.token)
+        localStorage.setItem("user",JSON.stringify(response.data.user))
+        setTimeout(()=>{
+          navigate("/home")
+        },1500)
       } else {
         setCode(status);
         setError(response.data);
@@ -28,6 +37,17 @@ export function VerifyOtp() {
       setCode(err.response?.status || 500);
     }
   };
+
+  useEffect(()=>{
+    if(!error)return
+    const tl=gsap.timeline()
+      tl.to(".msg",{
+          opacity:0,
+          yoyo:true,
+          duration:1.5
+      },[error])
+  })
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-950 via-gray-950 to-black relative overflow-hidden px-4 sm:px-6 lg:px-8">
       {/* Background glow */}
@@ -36,7 +56,7 @@ export function VerifyOtp() {
 
           {error && (
             <div
-              className={`mb-6 p-2 w-[400px] text-center text-white rounded-lg transition-all duration-300
+              className={`msg mb-6 p-2 w-[400px] text-center text-white rounded-lg transition-all duration-300
                                  ${code == 200 ? "bg-green-600" : "bg-red-600"}`}
             >
               {error}

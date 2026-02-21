@@ -5,6 +5,8 @@ import AboutUs from "./pages/Aboutus"
 import {ForgotPassword} from "./pages/ForgetPassword"
 import { CreateAccount } from "./pages/CreateAccount"
 import { VerifyOtp } from "./pages/VerifyOtp"
+import { Home } from "./pages/Home"
+import ProtectedRoute from "./components/ProtectedRoute"
 
 function App() {
 
@@ -34,6 +36,14 @@ function App() {
         <Route path="/verifyOtp" element={
           <VerifyOtp></VerifyOtp>
         }></Route>
+
+        <Route element={
+          <ProtectedRoute></ProtectedRoute>
+        }>
+        <Route path="/home" element={
+            <Home></Home>
+        }></Route>
+        </Route>
         
       </Routes>
     </>

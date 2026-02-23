@@ -1,9 +1,11 @@
+import {useNavigate} from "react-router-dom"
 
 export function Home() {
-  
+  const navigate=useNavigate()
+
   const userData = JSON.parse(localStorage.getItem("user"))
+
   
-  const error = userData.rooms.length === 0 ? "Create or Join a room !!!" : "";
 
   return (
     <div className="min-h-screen bg-gray-950 text-white flex">
@@ -45,7 +47,7 @@ export function Home() {
           </h1>
 
           {/* Create Room Button */}
-          <button className="px-5 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 transition">
+          <button className="px-5 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 transition" onClick={()=>{navigate("/createroom")}}>
             + Create Room
           </button>
         </div>
@@ -54,8 +56,6 @@ export function Home() {
 
         {/* Rooms Grid */}
         <div className="grid grid-cols-3 gap-6">
-
-         <div className="flex justify-center items-center text-xl whitespace-nowrap flex-wrap"><p>{error}</p></div> 
 
           {userData.rooms.map((elem,idx)=>{
              return(

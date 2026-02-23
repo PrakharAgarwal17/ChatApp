@@ -113,11 +113,6 @@ export function VerifyOtp() {
               />
             </div>
 
-            {/* Error placeholder */}
-            <div className="text-red-600 text-sm">
-              {/* Error message yahan aayega */}
-            </div>
-
             {/* Button */}
             <button
               type="submit"

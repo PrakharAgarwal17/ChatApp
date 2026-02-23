@@ -7,6 +7,7 @@ import { CreateAccount } from "./pages/CreateAccount"
 import { VerifyOtp } from "./pages/VerifyOtp"
 import { Home } from "./pages/Home"
 import ProtectedRoute from "./components/ProtectedRoute"
+import { CreateRoom } from "./pages/createRoom"
 
 function App() {
 
@@ -40,9 +41,8 @@ function App() {
         <Route element={
           <ProtectedRoute></ProtectedRoute>
         }>
-        <Route path="/home" element={
-            <Home></Home>
-        }></Route>
+        <Route path="/home" element={<Home></Home>}/>
+        <Route path="/createroom" element={<CreateRoom></CreateRoom>}/>
         </Route>
         
       </Routes>

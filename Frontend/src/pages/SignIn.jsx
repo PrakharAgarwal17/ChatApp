@@ -9,29 +9,32 @@ export function SignIn() {
   const [error,setError]=useState('')
   const [code,setCode]=useState('')
   const navigate=useNavigate()
-  async function signin(e) {
-    console.log(email,password)
-    e.preventDefault()
-    const response=await axios.post("http://localhost:3000/api/auth/signin",{email,password})
-    if(response.status==200){
-      setError('Login Successful')
-      setCode(200)
-      localStorage.clear()
-      localStorage.setItem("token",response.data.token)
-      localStorage.setItem("user",JSON.stringify(response.data.user))
-      setTimeout(()=>{
-        navigate('/home')
-      },1500)
-    }
 
-    else{
-      setError(response.data)
-      setCode(response.status)
-    }
+  async function signin(e) {
+    e.preventDefault()
+    try{
+
+      const response=await axios.post("http://localhost:3000/api/auth/signin",{email,password})
+      if(response.status==200){
+        setError('Login Successful')
+        setCode(200)
+        localStorage.clear()
+        localStorage.setItem("token",response.data.token)
+        localStorage.setItem("user",JSON.stringify(response.data.user))
+        setTimeout(()=>{
+          navigate('/home')
+        },1500)
+      }
+    }catch(err){
+       setError('');
+       const msg = err.response?.data?.message || "Login Failed";
+    setError(msg);
+    setCode(err.response?.status || 500);
   }
+}
 
   useEffect(()=>{
-    if(error) return
+    if(!error) return
     
     gsap.to(".msg",{
        opacity:0,
@@ -45,7 +48,7 @@ export function SignIn() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-950 via-gray-950 to-black relative overflow-hidden px-4 sm:px-6 lg:px-8">
       {/* Background ambient glows - greenish */}
       <div className="absolute -top-40 -left-60 w-[600px] h-[600px] bg-emerald-600/10 rounded-full blur-3xl animate-pulse-slow"></div>
-      <div className="msg absolute bottom-0 right-0 w-[500px] h-[500px] bg-teal-600/10 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-teal-600/10 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
 
         {error && (
             <div
@@ -106,6 +109,11 @@ export function SignIn() {
                 value={password}
               />
             </div>
+
+              <div className="text-red-600 text-sm">
+              {error}
+            </div>
+
 
             {/* Submit */}
             <button

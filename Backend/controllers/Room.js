@@ -46,7 +46,7 @@ export async function createRoom(req,res){
    }
 
 
-   return res.status(201).json({message:`Room Created Successfully , your room code is ${roomCode}`})
+   return res.status(201).json({message:`Room Created Successfully , your room code is ${roomCode}`,room:createRoom})
 
 }catch(err){
     return res.status(500).json({message:err})

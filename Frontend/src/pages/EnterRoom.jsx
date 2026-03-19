@@ -44,6 +44,7 @@ const EnterRoom = () => {
     return () => clearTimeout(timer);
   }
 }, [status,enteredCode]);
+
   return (
     <div>
       <div className="min-h-screen flex-col bg-gray-950 text-white flex items-center justify-center px-4">

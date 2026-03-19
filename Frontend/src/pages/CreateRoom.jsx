@@ -9,32 +9,34 @@ export function CreateRoom() {
   const [msg, setMsg] = useState("");
 
   const submitHandler = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem("token");
-    const response = await axios.post(
-      "http://localhost:3000/api/room/createroom",
-      { roomName },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+  e.preventDefault();
+  const token = localStorage.getItem("token");
+
+  const response = await axios.post(
+    "http://localhost:3000/api/room/createroom",
+    { roomName },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-    );
-    console.log(response.data);
-    const room = response.data.room;
+    }
+  );
 
-    const user = JSON.parse(localStorage.getItem("user"));
+  setStatus(response.status);
+  setMsg(response.data.message);
 
-    user.rooms = [...(user.rooms || []), room];
+  const newRoomId = response.data.room._id; 
 
-    localStorage.setItem("user", JSON.stringify(user));
+  const user = JSON.parse(localStorage.getItem("user"));  
 
-    setStatus(response.status);
-    setMsg(response.data.message);
-    setTimeout(() => {
-      navigate("/home", { state: { newroom: room } });
-    }, 2000);
-  };
+  user.rooms = [...(user.rooms || []), newRoomId]; 
+
+  localStorage.setItem("user", JSON.stringify(user)); 
+
+  setTimeout(() => {
+    navigate("/home");
+  }, 2000);
+};
 
   return (
     <div className="min-h-screen flex-col bg-gray-950 text-white flex items-center justify-center px-4">

@@ -15,7 +15,7 @@ const UserAuth=new mongoose.Schema({
         required:true
     },
     rooms:[{
-        type:mongoose.Types.ObjectId,
+        type:mongoose.Schema.Types.ObjectId,
         ref:"room"
     }]
 })

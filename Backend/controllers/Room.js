@@ -175,3 +175,18 @@ export async function removeRoom(req,res){
     }
 
 }
+
+export async function getRoom(req,res){
+    try{
+    const userId=req.userId
+
+    const user=await userModel.findOne({_id:userId}).populate("rooms")
+     
+    console.log(user)
+
+    return res.status(200).json({ rooms:user.rooms })
+    
+    }catch(err){
+        return res.status(500).json({message:err.message})
+    }
+}

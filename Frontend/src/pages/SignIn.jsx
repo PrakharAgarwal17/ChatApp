@@ -110,7 +110,7 @@ export function SignIn() {
               />
             </div>
 
-              <div className="text-red-600 text-sm">
+              <div className={`${(code==200)?"text-green-600":"text-red-600"} text-sm`}>
               {error}
             </div>
 

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const roomSchema=new mongoose.Schema({
     owner:{
-        type:mongoose.Types.ObjectId,
+        type:mongoose.Schema.Types.ObjectId,
         ref:"User",
         required:true
     },
@@ -16,7 +16,7 @@ const roomSchema=new mongoose.Schema({
         unique:true
     },
     members:[{
-            type:mongoose.Types.ObjectId,
+            type:mongoose.Schema.Types.ObjectId,
             ref:"User"
     }],
 })

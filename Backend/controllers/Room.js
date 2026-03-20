@@ -180,13 +180,28 @@ export async function getRoom(req,res){
     try{
     const userId=req.userId
 
-    const user=await userModel.findOne({_id:userId}).populate("rooms")
-     
-    console.log(user)
+    const user=await userModel.findOne({_id:userId}).populate({path:"rooms",populate:{path:"owner",select:"name"}})
 
     return res.status(200).json({ rooms:user.rooms })
     
     }catch(err){
         return res.status(500).json({message:err.message})
     }
+}
+
+export async function getParticularRoom(req,res){
+   try{
+      const userId=req.userId
+      if(!userId){
+        return res.status(401).json({message:"Unauthorized User"})
+      }
+      const room=req.params
+      const roomData=await roomModel.findOne({code:room.roomcode}).populate("members","name")
+      if(!roomData){
+        return res.status(404).json({message:"Room Not found"})
+      }
+      return res.status(200).json({details:roomData})
+   }catch(err){
+      return res.status(500).json({message:err.message})
+   }
 }

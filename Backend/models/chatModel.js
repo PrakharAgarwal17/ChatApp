@@ -3,7 +3,7 @@ import mongoose from "mongoose"
 const chatModel=new mongoose.Schema({
     roomId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"room",
+        ref:"Room",
         required:true
     },
     chat:{

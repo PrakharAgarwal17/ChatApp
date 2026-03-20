@@ -51,7 +51,7 @@ const EnterRoom = () => {
         {status && (
           <div
             className={`notification fixed top-20 h-[50px] w-[300px] flex justify-center items-center rounded-md ${
-              status === 200 ? "bg-green-500" : "bg-red-500"
+              status === 200 ? "bg-emerald-600" : "bg-red-500"
             }`}
           >
             {status === 200 ? "Joined Successfully" : "Failed to join"}

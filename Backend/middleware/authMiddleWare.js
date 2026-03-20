@@ -13,7 +13,6 @@ export async function isloggedIn(req,res,next){
             return res.status(400).json({message:"User not found"})
         } 
         req.userId=user._id
-        console.log(req.userId)
         next()
     }catch(err){
          return res.status(500).json({message:err})

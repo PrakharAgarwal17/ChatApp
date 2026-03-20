@@ -9,7 +9,8 @@ import { Home } from "./pages/Home"
 import ProtectedRoute from "./components/ProtectedRoute"
 import { CreateRoom } from "./pages/createRoom"
 import EnterRoom from "./pages/EnterRoom"
-import { ChatPage } from "./pages/Chat"
+import Chat from "./pages/Chat"
+
 function App() {
 
   return (
@@ -45,7 +46,7 @@ function App() {
         <Route path="/home" element={<Home></Home>}/>
         <Route path="/enterroom" element={<EnterRoom></EnterRoom>}></Route>
         <Route path="/createroom" element={<CreateRoom></CreateRoom>}/>
-        <Route path='/:roomcode' element= {<ChatPage/>} />
+        <Route path='/:roomcode' element= {<Chat/>} />
         </Route>
         
       </Routes>

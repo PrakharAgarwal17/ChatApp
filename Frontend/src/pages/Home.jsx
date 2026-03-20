@@ -5,6 +5,7 @@ import axios from "axios";
 export function Home() {
   const navigate = useNavigate();
   const [room, setRoom] = useState([]);
+
   
   const userData = JSON.parse(localStorage.getItem("user"));
 
@@ -93,10 +94,15 @@ export function Home() {
               >
                 <h3 className="text-2xl font-semibold">{elem.roomName}</h3>
                 <p className="text-sm text-gray-300 mt-1">Code: {elem.code}</p>
-                <p className="text-sm text-blue-500 mt-1"> {userData.name}</p>
-                <button onClick={() => {navigatejoinroom(elem.code)}} className="mt-4 w-full py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 transition">
+                <p className="text-sm text-blue-500 mt-1">By~ {elem.owner.name}</p>
+                <div className="flex justify-between"> 
+                <button onClick={() => {navigatejoinroom(elem.code)}} className="mt-4 w-3/5 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 transition">
                  Join room
                 </button>
+                <button onClick={() => {navigatejoinroom(elem.code)}} className="mt-4 w-1/4 py-2 rounded-lg bg-red-700 hover:bg-red-600 transition">
+                 Remove
+                </button>
+                </div>
               </div>
             );
           })}

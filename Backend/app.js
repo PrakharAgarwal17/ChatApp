@@ -6,6 +6,7 @@ import dotenv from "dotenv"
 import cors from "cors"
 import auth from "./routes/authRoutes.js"
 import room from "./routes/roomRoute.js"
+import chat from "./routes/chatRoute.js"
 import { Server } from 'socket.io'
 import { setupSocketHandlers } from './controllers/socketController.js'
 
@@ -49,6 +50,7 @@ app.get('/', (req, res) => {
 
 app.use("/api/auth", auth)
 app.use("/api/room", room)
+app.use("/api/chat",chat)
 
 // Server start
 server.listen(3000, () => {

@@ -1,36 +1,69 @@
 import gsap from "gsap"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
-import { useRef } from "react"
+import {ScrollTrigger} from "gsap/ScrollTrigger"
 
 export function Landing() {
   const title = "Converza"
-  
-  const reference=useRef(null)
-  const hoverTl=useRef(null)
-  
+
+  const features=[
+  {
+    title: "Instant Rooms",
+    desc: "Create and join rooms in seconds with zero friction."
+  },
+  {
+    title: "Real-time Sync",
+    desc: "Messages delivered instantly with no refresh needed."
+  },
+  {
+    title: "Clean Experience",
+    desc: "No clutter, just pure conversation flow."
+  },
+  {
+    title: "Secure Chats",
+    desc: "Your conversations stay private and protected."
+  },
+  {
+    title: "Fast Performance",
+    desc: "Optimized for speed with minimal latency."
+  },
+  {
+    title: "Multi-device Support",
+    desc: "Access your chats from any device seamlessly."
+  }
+]
+
+  const reference = useRef(null)
+  const hoverTl = useRef(null)
+
   useEffect(() => {
-    const tl = gsap.timeline()
+    gsap.registerPlugin(ScrollTrigger)
+     document.body.style.overflow = "hidden"
+    const tl = gsap.timeline({
+      onComplete:()=>{
+        document.body.style.overflow="auto"
+      }
+    })
     tl.to(".beginning", {
       opacity: 1,
       duration: 1.5,
       delay: 1,
       ease: "power3.out",
-      color: "grey"
+      color: "#9ca3af"
     })
-    tl.to((".beginning span"), {
-      color: "white",
+    tl.to(".beginning span", {
+      color: "#ffffff",
       duration: 0.02,
       stagger: 0.08
     })
     tl.to(".start", {
       yPercent: -100,
       duration: 1.2,
-      ease: "power4.inOut",
+      ease: "power4.inOut"
     })
     tl.to(".title span", {
-      color: "#54FF64",
-      duration: 0.02,
+      color: "#4ade80",
+      duration: 0.04,
       stagger: 0.1
     })
     gsap.to(".heading", {
@@ -41,82 +74,108 @@ export function Landing() {
       ease: "power2.inOut",
       yoyo: true
     })
+
+    gsap.from(".description",{
+      x:-150,
+      opacity:0,
+      duration:0.3,
+      delay:0.2,
+      scrollTrigger:{
+        trigger:".description",
+        scroller:"body",
+        start:"top 70%",
+        toggleActions:"play reverse play reverse"
+      }
+
+    })
+    
   }, [])
 
   useEffect(() => {
-  hoverTl.current = gsap.timeline({ paused: true })
-    .to(reference.current, {
-      scale: 1.05,
-      opacity: 0.9,
+    hoverTl.current = gsap.timeline({ paused: true }).to(reference.current, {
+      scale: 1.03,
       duration: 0.4,
       ease: "power3.out"
     })
-}, [])
-
-
+  }, [])
 
   return (
-    <div>
-      <div className="start fixed top-0 w-full left-0 min-h-screen bg-black flex z-50 justify-center items-center">
-        <h1 className="beginning text-white text-xl font-roboto opacity-0 md:text-xl lg:text-4xl">{title.split("").map((element,idx) => { return <span key={idx} className="ele">{element}</span> })}</h1>
+    <div className="bg-[#0b0b0c] text-white relative"> 
+       <div className="start fixed top-0 w-full left-0 min-h-screen bg-black flex z-50 justify-center items-center">
+        <h1 className="beginning text-white text-xl opacity-0 md:text-xl lg:text-4xl">
+          {title.split("").map((e, i) => (
+            <span key={i}>{e}</span>
+          ))}
+        </h1>
+      </div> 
+
+      {/* FULL BACKGROUND CHAT (BLUR) */}
+      <div
+        ref={reference}
+        onMouseEnter={() => hoverTl.current.play()}
+        onMouseLeave={() => hoverTl.current.reverse()}
+        className="absolute inset-0 z-0 flex items-center justify-center"
+      >
+        <div className="w-full max-w-4xl opacity-60 blur-sm">
+          <div className="space-y-6 text-left">
+            <div className="bg-white/10 p-4 rounded-xl w-fit">Hey bro, room bana liya?</div>
+            <div className="bg-emerald-500/20 p-4 rounded-xl w-fit ml-auto">Haan, join code bhej raha 🔥</div>
+            <div className="bg-white/10 p-4 rounded-xl w-fit">Smooth lag raha 👌</div>
+          </div>
+        </div>
       </div>
-      <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-black">
 
-        <div className="flex flex-col justify-center px-8 sm:px-12 md:px-20 lg:px-24 bg-gradient-to-br from-black via-gray-950 to-black text-white">
+      {/* HERO CONTENT (ABOVE) */}
+      <section className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 text-center">
 
-          <p className="text-sm uppercase opacity-0 heading tracking-widest text-gray-500 mb-6 font-medium">
-            REAL-TIME COMMUNICATION
-          </p>
+        <p className="heading text-xs tracking-[0.4em] text-gray-500 mb-6 opacity-0">
+          REAL-TIME CHAT PLATFORM
+        </p>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mb-8">
-            Welcome to <span className="title text-emerald-300">{title.split("").map((element,index) => { return <span key={index} className="ele">{element}</span> })}</span>
-          </h1>
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight max-w-3xl">
+          Connect instantly with
+          <span className="block mt-3 text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 to-green-300 title">
+            {title.split("").map((e, i) => (
+              <span key={i}>{e}</span>
+            ))}
+          </span>
+        </h1>
 
-          <p className="text-lg md:text-xl text-gray-300 mb-5 leading-relaxed max-w-xl">
-            Your seamless chat app built for fast, secure, and real-time conversations.
-          </p>
+        <p className="mt-6 text-gray-400 text-lg max-w-xl">
+          Minimal, fast and distraction-free chat built for seamless real-time communication.
+        </p>
 
-          <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-xl">
-            Create rooms, connect instantly, and keep every conversation flowing —
-            without distractions.
-          </p>
+        <div className="mt-10 flex gap-4 flex-wrap justify-center">
 
-          <div className="mt-12 flex flex-wrap gap-5">
-            <Link to="/signin">
-            <button className="px-8 py-4 hover:bg-emerald-600 border border-emerald-500/90 text-white font-semibold rounded-xl flex  transition shadow-lg shadow-emerald-900/20">
+          <Link to="/signin">
+            <button className="px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-green-400 text-black font-semibold hover:scale-105 transition">
               Get Started
-              <svg className="ml-2 mt-1"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 128 128"
-                width="18"
-                height="18"
-                >
-                <path
-                  d="M64 0C28.7 0 0 28.7 0 64s28.7 64 64 64 64-28.7 64-64S99.3 0 64 0zm0 121.6C32.2 121.6 6.4 95.8 6.4 64S32.2 6.4 64 6.4s57.6 25.8 57.6 57.6-25.8 57.6-57.6 57.6zM49.2 38.4 73.6 64 49.2 89.6h13.5L86.4 64 62.7 38.4H49.2z"
-                  fill="#fff"
-                  />
-              </svg>
-
             </button>
-                  </Link>
-            <Link to="/learnmore">
-            <button className="px-8 py-4 bg-transparent border border-gray-700 hover:border-gray-400 text-gray-500 hover:text-white font-semibold rounded-xl transition">
+          </Link>
+
+          <Link to="/learnmore">
+            <button className="px-8 py-4 rounded-xl border border-white/10 text-gray-400 hover:text-white hover:border-white/30 transition">
               Learn More
             </button>
-            </Link>
-          </div>
+          </Link>
 
         </div>
 
-        <div className=" right-side bg-gradient-to-br from-black bg-cover m-10 opacity-[0.7] rounded-3xl  bg-center bg-[url('https://imgs.search.brave.com/li1SEhl_S2ToPKCpIg0QxlIt75-Ze5S5jrT_aHlYINM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMjA4/MDQwNTM0OC9waG90/by9wb3J0cmFpdC1v/Zi1hbi1vbGRlci13/b21hbi1pbi1oZXIt/cGFqYW1hcy10ZXh0/aW5nLW9uLWhlci1t/b2JpbGUtcGhvbmUt/aW4tdGhlLW1vcm5p/bmcuanBnP3M9NjEy/eDYxMiZ3PTAmaz0y/MCZjPUZ4R3I0ZEJ0/enB3VUs3b1F0amw2/QlYzc1dWNVJsZkp5/cS14RkZtNFg5V0E9')] via-gray-950 to-emerald-950/30 hidden md:flex items-center justify-center relative overflow-hidden" ref={reference} onMouseEnter={()=>hoverTl.current.play()} onMouseLeave={()=>hoverTl.current.reverse()}>
-          <div className="absolute inset-0 opacity-10 pointer-events-none">
-            <div className="absolute -left-20 -top-20 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
-            <div className="absolute -right-20 -bottom-20 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl"></div>
+      </section>
+        <h1 className="flex justify-center text-5xl font-roboto">Some of Our features</h1>
+
+      {/* FEATURES */}
+      <section className="features relative z-10 py-24 px-6 max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
+
+
+        {features.map((f, i) => (
+          <div key={i} className="description one p-6 rounded-2xl bg-white/5 border border-white/10 hover:scale-110 hover:border-emerald-400/40 transition">
+            <h3 className="text-lg font-semibold mb-2">{f.title}</h3>
+            <p className="text-gray-400 text-sm">{f.desc}</p>
           </div>
+        ))}
 
-        </div>
-
-      </div>
+      </section>
 
     </div>
   )

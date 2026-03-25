@@ -1,58 +1,107 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import socket  from "../../api/ws";
+import socket from "../../api/ws";
 
 const Chat = () => {
   const [members, setmembers] = useState([]);
   const { roomcode } = useParams();
   const [msg, setmsg] = useState("");
-  const [notification , setNotification] = useState("")
+  const [messages, setMessages] = useState([]);
+  const [notification, setNotification] = useState("");
   const token = localStorage.getItem("token");
 
-  const userData=JSON.parse(localStorage.getItem("user"))
+  const userData = JSON.parse(localStorage.getItem("user"));
 
   function submitHandeler(e) {
     e.preventDefault();
+    console.log(messages);
+    sendmessage();
+    setmsg("");
   }
-  
+
   useEffect(() => {
-  
-    socket.connect()
-    socket.emit("join-room" , {
-       username:userData.name,
-       roomcode:roomcode
-    })
+    socket.connect();
+    socket.emit("join-room", {
+      username: userData.name,
+      roomcode: roomcode,
+    });
 
-    socket.on("user-joined",(data)=>{
-        console.log(data)
-        setNotification(data.message)
-        
-        setTimeout(() => {
-          setNotification("")
-        }, 5000 );
-    })
-    socket.on("leave-room" , (data) => {
-    setNotification(data.message)
-       setTimeout(() => {
-          setNotification("")
-        }, 5000 );
-    })
-    
- socket.on("disconnect", (reason) => {
-  console.log(reason)
-});
+    socket.on("user-joined", (data) => {
+      console.log(data);
+      setNotification(data.message);
 
+      setTimeout(() => {
+        setNotification("");
+      }, 5000);
+    });
 
-return () => {
-  socket.disconnect()
+    socket.on("Recive-message", (data) => {
+      setMessages((prev) => [...prev, data]);
+    });
 
-  
-  console.log("user disconnected")
-}
-    
+    socket.on("leave-room", (data) => {
+      setNotification(data.message);
+      setTimeout(() => {
+        setNotification("");
+      }, 5000);
+    });
+
+    socket.on("disconnect", (reason) => {
+      console.log(reason);
+    });
+
+    return () => {
+      socket.off("user-joined");
+      socket.off("Recive-message");
+      socket.off("leave-room");
+      socket.disconnect();
+
+      console.log("user disconnected");
+    };
   }, []);
 
+  useEffect(() => {
+    const fetch = async () => {
+      const receivedChat = await axios.get(
+        `http://localhost:3000/api/chat/getchat/${roomcode}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = receivedChat.data;
+      const chat = data[0].chat;
+      console.log(chat);
+      setMessages([...messages, ...chat]);
+    };
+    fetch();
+  }, []);
+
+  const sendmessage = async () => {
+    const data = {
+      chatEntered: msg,
+      userId: userData.id,
+      roomcode: roomcode,
+      username: userData.name,
+    };
+
+    socket.emit("send-message", data);
+
+    setMessages((prev) => [...prev, data]);
+    console.log(messages);
+
+    const send = await axios.post(
+      `http://localhost:3000/api/chat/chatSection/${roomcode}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  };
 
   const roomDetails = async () => {
     try {
@@ -62,7 +111,7 @@ return () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       setmembers(room.data.details.members);
     } catch (err) {
@@ -75,7 +124,7 @@ return () => {
   }, [roomcode]);
 
   return (
-    <div className="flex h-screen bg-gray-950 text-white">
+    <div className="flex h-screen bg-gray-950 text-white ">
       <div className="w-72 bg-gray-900 border-r border-gray-800 p-6 flex flex-col justify-between">
         <div>
           <h2 className="text-xl font-semibold mb-6">Chat Room</h2>
@@ -95,62 +144,79 @@ return () => {
         <div className="p-4 border-b border-gray-800 flex justify-between items-center">
           <h1 className="text-xl font-semibold">General Chat</h1>
         </div>
-        {(notification != "" )? 
-      <div className="fixed top-10 left-1/2 -translate-x-1/2 z-50 transition-all duration-300">
-    <div className="bg-gray-900  border border-green-500 text-white px-4 py-3 rounded-lg shadow-lg min-w-[250px] text-center animate-bounce">
-      {notification}
-    </div>
-  </div> :" "    
-}
-
-        <div className="flex-1 p-6 overflow-y-auto space-y-4">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center">
-              A
-            </div>
-            <div className="bg-gray-800 p-3 rounded-lg max-w-xs">
-              <p className="text-sm text-gray-300">Hello bro 👋</p>
+        {notification != "" ? (
+          <div className="fixed top-10 left-1/2 -translate-x-1/2 z-50 transition-all duration-300">
+            <div className="bg-gray-900  border border-green-500 text-white px-4 py-3 rounded-lg shadow-lg min-w-[250px] text-center animate-bounce">
+              {notification}
             </div>
           </div>
+        ) : (
+          " "
+        )}
 
-          <div className="flex justify-end">
-            <div className="bg-emerald-700 p-3 rounded-lg max-w-xs">
-              <p className="text-sm">Hey! What's up?</p>
-            </div>
-          </div>
+       <div className="flex-1 p-6 overflow-x-hidden overflow-y-auto space-y-4
+          [&::-webkit-scrollbar]:w-2
+          [&::-webkit-scrollbar-track]:rounded-full
+          [&::-webkit-scrollbar-track]:bg-gray-900
+          [&::-webkit-scrollbar-thumb]:rounded-full
+          [&::-webkit-scrollbar-thumb]:bg-gray-700
+          hover:[&::-webkit-scrollbar-thumb]:bg-gray-600">
+          {messages.map((msg, index) => {
+            const isMe = (msg.userId || msg.senderId?._id) == userData.id;
 
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center">
-              B
-            </div>
-            <div className="bg-gray-800 p-3 rounded-lg max-w-xs">
-              <p className="text-sm text-gray-300">Kaam ho gaya kya?</p>
-            </div>
-          </div>
+            return (
+              <div
+                key={msg._id || msg.id || index}
+                className={`flex ${isMe ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`p-3 rounded-lg max-w-xs ${
+                    isMe ? "bg-emerald-700" : "bg-gray-800"
+                  }`}
+                >
+                  {/* Agar message mera nahi hai, tabhi naam show karo */}
+                  {!isMe && (
+                    <p className="text-blue-400 font-semibold text-sm mb-1">
+                      {msg.sentuser || msg.senderId?.name}
+                    </p>
+                  )}
+                  <p className="text-sm">{msg.chatEntered}</p>
+                </div>
+              </div>
+            );
+          })}
         </div>
-
-        <div className="p-4 border-t border-gray-800 flex gap-3">
-          <input
-            type="text"
-            placeholder="Type a message..."
-            className="flex-1 px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none"
-            value={msg}
-            onChange={(e) => {
-              setmsg(e.target.value);
-            }}
-          />
-          <button
-            className="px-5 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 transition"
-            onClick={(e) => {
-              submitHandeler(e);
-            }}
-          >
-            Send
-          </button>
-        </div>
+        <form
+          onSubmit={(e) => {
+            submitHandeler(e);
+          }}
+        >
+          <div className="p-4 border-t border-gray-800 flex gap-3">
+            <input
+              type="text"
+              placeholder="Type a message..."
+              className="flex-1 px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none"
+              value={msg}
+              onChange={(e) => {
+                setmsg(e.target.value);
+              }}
+            />
+            <button
+              className="px-5 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 transition"
+              type="submit"
+            >
+              Send
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
 };
 
 export default Chat;
+
+
+// ✅ {!isMe && (...)} - Sirf tab naam show hoga jab message tumhara nahi hai
+// ✅ Proper key fix - key={msg._id || msg.id || index}
+// ✅ Color consistent - text-blue-400 (sidebar wala blue)

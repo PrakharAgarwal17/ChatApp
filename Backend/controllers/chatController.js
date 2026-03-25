@@ -1,5 +1,5 @@
-import roomModel from "../models/roomModel";
-import chatModel from "../models/chatModel";
+import roomModel from "../models/roomModel.js";
+import chatModel from "../models/chatModel.js";
 
 export async function sendchat(req,res){
     try{
@@ -7,9 +7,9 @@ export async function sendchat(req,res){
     if(!userId){
         return res.status(401).json({message:"Unauthorised User"})
     }
-    const roomId=req.params.roomId
+    const roomCode=req.params.roomId
     
-    const roomDetails=await roomModel.findOne({_id:roomId})
+    const roomDetails=await roomModel.findOne({code:roomCode})
 
     if(!roomDetails){
         return res.status(400).json({message:"Room not found"})
@@ -25,11 +25,11 @@ export async function sendchat(req,res){
          return res.status(400).json({ message: "Invalid chat message" });
     }
      
-   const chatSend= await chatModel.findOneAndUpdate({roomId},{
+   const chatSend= await chatModel.findOneAndUpdate({roomId:roomDetails.id},{
        $push:{
            chat:{
                 senderId:userId,
-                chatEntered:enteredChat,
+                chatEntered:chatEntered,
                 time:Date.now()
            }
        }
@@ -45,3 +45,34 @@ export async function sendchat(req,res){
     return res.status(500).json({message:err})
 }
 } 
+
+export async function getChat(req,res){
+    try {
+      const userId=req.userId
+     
+      if(!userId){
+        return res.status(401).json({message:"Unauthorised User"})
+    }
+
+    const roomcode=req.params.roomcode
+
+    if(!roomcode){
+       return res.status(400).json({message:"Room not found "})
+    }
+
+    const roomDetails=await roomModel.findOne({code:roomcode})
+
+    if(!roomDetails){
+        return res.status(400).json({message:"Room not found"})
+    }
+
+      const getChat = await chatModel.find({roomId:roomDetails.id}).populate("chat.senderId" , "name")
+  
+      if(!getChat){
+        return res.status(400).json({message:"Room not found"})
+      }
+       return res.status(200).send(getChat)
+      }catch (err) {
+        return res.status(500).json({message : "error in get data"})
+    }
+}

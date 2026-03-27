@@ -48,15 +48,24 @@ const EnterRoom = () => {
   return (
     <div>
       <div className="min-h-screen flex-col bg-gray-950 text-white flex items-center justify-center px-4">
-        {status && (
-          <div
-            className={`notification fixed top-20 h-[50px] w-[300px] flex justify-center items-center rounded-md ${
-              status === 200 ? "bg-emerald-600" : "bg-red-500"
-            }`}
-          >
-            {status === 200 ? "Joined Successfully" : "Failed to join"}
-          </div>
-        )}
+       {status && (
+  <div className="fixed top-10 left-1/2 -translate-x-1/2 z-50">
+    <div
+      className={`px-6 py-3 rounded-xl shadow-lg border 
+      flex items-center gap-2 text-sm font-medium
+      animate-bounce
+      ${
+        status === 200
+          ? "bg-emerald-600 border-emerald-400 text-white"
+          : "bg-red-600 border-red-400 text-white"
+      }`}
+    >
+      <span>
+        {status === 200 ? "Joined Successfully" : "Failed to join room"}
+      </span>
+    </div>
+  </div>
+)}
         <div className="w-full max-w-md bg-gray-900 border border-gray-800 rounded-2xl shadow-lg p-8">
           <h1 className="text-2xl font-semibold text-center mb-2">
             Enter New Room

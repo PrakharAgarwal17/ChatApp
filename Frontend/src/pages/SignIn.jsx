@@ -51,13 +51,21 @@ export function SignIn() {
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-teal-600/10 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
 
         {error && (
-            <div
-              className={`msg mb-6 p-2 w-[400px] text-center text-white rounded-md transition-all duration-300
-                                 ${code == 200 ? "bg-green-600" : "bg-red-600"}`}
-            >
-              {error}
-            </div>
-          )}
+  <div className="fixed top-10 left-1/2 -translate-x-1/2 z-50">
+    <div
+      className={`px-6 py-3 rounded-xl shadow-lg border 
+      flex items-center gap-2 text-sm font-medium
+      animate-bounce
+      ${
+        code === 200
+          ? "bg-emerald-600 border-emerald-400 text-white"
+          : "bg-red-600 border-red-400 text-white"
+      }`}
+    >
+      <span>{error}</span>
+    </div>
+  </div>
+)}
       <div className="relative w-full max-w-md z-10">
         <div className="rounded-3xl bg-gray-900/60 backdrop-blur-2xl border border-gray-800/80 shadow-2xl shadow-black/70 p-9 md:p-11">
           {/* Header */}

@@ -85,24 +85,31 @@ export function Home() {
         </div>
 
         {/* Rooms Grid */}
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
           {room.map((elem, idx) => {
             return (
               <div
                 key={idx}
-                className="bg-gray-900 border border-gray-800 rounded-xl p-5"
+                className="bg-gray-900 border border-gray-800 rounded-xl p-5 min-w-0"
               >
                 <h3 className="text-2xl font-semibold">{elem.roomName}</h3>
                 <p className="text-sm text-gray-300 mt-1">Code: {elem.code}</p>
                 <p className="text-sm text-blue-500 mt-1">By~ {elem.owner.name}</p>
-                <div className="flex justify-between"> 
-                <button onClick={() => {navigatejoinroom(elem.code)}} className="mt-4 w-3/5 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 transition">
-                 Join room
-                </button>
-                <button onClick={() => {navigatejoinroom(elem.code)}} className="mt-4 w-1/4 py-2 rounded-lg bg-red-700 hover:bg-red-600 transition">
-                 Remove
-                </button>
-                </div>
+        <div className="flex flex-wrap gap-2 mt-4"> 
+  <button
+    onClick={() => navigatejoinroom(elem.code)}
+    className="flex-1 min-w-[120px] py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 transition text-sm"
+  >
+    Join room
+  </button>
+
+  <button
+    onClick={() => navigatejoinroom(elem.code)}
+    className="flex-1 min-w-[100px] py-2 rounded-lg bg-red-700 hover:bg-red-600 transition text-sm"
+  >
+    Remove
+  </button>
+</div>
               </div>
             );
           })}

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import socket from "../../api/ws";
+import { useNavigate } from "react-router-dom";
 
 const Chat = () => {
   const [members, setmembers] = useState([]);
@@ -10,8 +11,13 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [notification, setNotification] = useState("");
   const token = localStorage.getItem("token");
+  const navigate=useNavigate()
 
   const userData = JSON.parse(localStorage.getItem("user"));
+
+  const redirectToHome=()=>{
+        navigate("/home")
+  }
 
   function submitHandeler(e) {
     e.preventDefault();
@@ -92,7 +98,7 @@ const Chat = () => {
     setMessages((prev) => [...prev, data]);
     console.log(messages);
 
-    const send = await axios.post(
+     await axios.post(
       `http://localhost:3000/api/chat/chatSection/${roomcode}`,
       data,
       {
@@ -135,7 +141,9 @@ const Chat = () => {
           })}
         </div>
 
-        <button className="py-2 rounded-lg bg-red-600 hover:bg-red-500 transition">
+        <button className="py-2 rounded-lg bg-red-600 hover:bg-red-500 transition" onClick={()=>{
+          redirectToHome()
+        }}>
           Leave Room
         </button>
       </div>

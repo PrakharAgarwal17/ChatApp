@@ -23,7 +23,6 @@ const Chat = () => {
 
   function submitHandeler(e) {
     e.preventDefault();
-    console.log(messages);
     sendmessage();
     setmsg("");
   }
@@ -36,7 +35,6 @@ const Chat = () => {
     });
 
     socket.on("user-joined", (data) => {
-      console.log(data);
       setNotification(data.message);
 
       setTimeout(() => {
@@ -99,7 +97,6 @@ const Chat = () => {
     socket.emit("send-message", data);
 
     setMessages((prev) => [...prev, data]);
-    console.log(messages);
 
      await axios.post(
       `{BACKEND_URL}/api/chat/chatSection/${roomcode}`,

@@ -24,7 +24,6 @@ export function CreateAccount() {
     try{
       const response = await axios.post(`${BACKEND_URL}/api/auth/signup`,{name,email,password,confirmPassword})
       navigate('/verifyotp')
-      console.log(response)
     }
     catch(err){
       setError(err.response?.data?.message || "Something went wrong");

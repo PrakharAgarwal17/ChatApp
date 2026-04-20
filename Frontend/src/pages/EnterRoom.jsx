@@ -37,7 +37,6 @@ const EnterRoom = () => {
     const timer = setTimeout(() => {
        if(status==200){
         navigate(`/${enteredCode}`)
-        console.log(enteredCode)
       }
       setStatus("");
       setenteredCode("")

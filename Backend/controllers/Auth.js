@@ -10,15 +10,15 @@ export async function SignUp(req, res) {
     const { name, email, password, confirmPassword } = req.body;
 
     if (!name || !password || !email || !confirmPassword) {
-      res
-        .json(404)
+      return res
+        .status(404)
         .json({
           message: "All the fields must be filled in order to continue furthur",
         });
     }
 
     if (password != confirmPassword) {
-      return res.status(404).json({ message: "Password doesnt match" });
+      return res.status(400).json({ message: "Password doesnt match" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -105,7 +105,9 @@ export async function SignUp(req, res) {
 
     return res.status(200).json({ message: "OTP sent successfully" });
   } catch (err) {
-    return res.status(500).json({ message: err });
+   return res.status(500).json({
+  message: err.message || err.toString(),
+});
   }
 }
 

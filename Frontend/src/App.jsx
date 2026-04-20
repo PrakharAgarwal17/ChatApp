@@ -7,7 +7,7 @@ import { CreateAccount } from "./pages/CreateAccount"
 import { VerifyOtp } from "./pages/VerifyOtp"
 import { Home } from "./pages/Home"
 import ProtectedRoute from "./components/ProtectedRoute"
-import { CreateRoom } from "./pages/createRoom"
+import { CreateRoom } from "./pages/CreateRoom"
 import EnterRoom from "./pages/EnterRoom"
 import Chat from "./pages/Chat"
 

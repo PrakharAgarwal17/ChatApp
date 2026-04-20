@@ -5,6 +5,7 @@ import axios from "axios";
 export function Home() {
   const navigate = useNavigate();
   const [room, setRoom] = useState([]);
+  const BACKEND_URL=import.meta.env.BACKEND_URL
 
   
   const userData = JSON.parse(localStorage.getItem("user"));
@@ -12,7 +13,7 @@ export function Home() {
   useEffect(() => {
     const fetchRoom = async () => {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:3000/api/room/getroom", {
+      const res = await axios.get(BACKEND_URL, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

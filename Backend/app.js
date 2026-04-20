@@ -15,7 +15,6 @@ dotenv.config()
 const app = express()
 const frontend = "http://localhost:5173"
 
-// Server create karo
 export const server = http.createServer(app)
 
 // Socket.IO setup

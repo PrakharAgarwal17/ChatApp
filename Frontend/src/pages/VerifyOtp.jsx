@@ -10,11 +10,14 @@ export function VerifyOtp() {
   const [code, setCode] = useState("");
   const navigate=useNavigate()
 
+  const BACKEND_URL=import.meta.env.BACKEND_URL
+
+
   const HandleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/auth/verifyotp",
+        `${BACKEND_URL}/api/auth/verifyotp`,
         { email, otp },
       );
       const status = response.status;

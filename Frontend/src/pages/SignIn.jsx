@@ -10,11 +10,14 @@ export function SignIn() {
   const [code,setCode]=useState('')
   const navigate=useNavigate()
 
+  const BACKEND_URL=import.meta.env.BACKEND_URL
+
+
   async function signin(e) {
     e.preventDefault()
     try{
 
-      const response=await axios.post("http://localhost:3000/api/auth/signin",{email,password})
+      const response=await axios.post(`${BACKEND_URL}/api/auth/signin`,{email,password})
       if(response.status==200){
         setError('Login Successful')
         setCode(200)

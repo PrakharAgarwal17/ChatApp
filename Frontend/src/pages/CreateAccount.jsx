@@ -10,6 +10,8 @@ export function CreateAccount() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate=useNavigate()
+  const BACKEND_URL=import.meta.env.BACKEND_URL
+
 
  async function HandleSubmit(e) {
     e.preventDefault();
@@ -20,7 +22,7 @@ export function CreateAccount() {
     }
 
     try{
-      const response = await axios.post("http://localhost:3000/api/auth/signup",{name,email,password,confirmPassword})
+      const response = await axios.post(`${BACKEND_URL}/api/auth/signup`,{name,email,password,confirmPassword})
       navigate('/verifyotp')
       console.log(response)
     }

@@ -6,6 +6,8 @@ const EnterRoom = () => {
   const navigate = useNavigate();
   const [enteredCode, setenteredCode] = useState("");
   const [status, setStatus] = useState("");
+  const BACKEND_URL=import.meta.env.BACKEND_URL
+
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -16,7 +18,7 @@ const EnterRoom = () => {
         return;
       }
       const response = await axios.post(
-        "http://localhost:3000/api/room/joinroom",
+        `${BACKEND_URL}/api/room/joinroom`,
         { enteredCode },
         {
           headers: {

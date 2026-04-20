@@ -12,6 +12,8 @@ const Chat = () => {
   const [notification, setNotification] = useState("");
   const token = localStorage.getItem("token");
   const navigate=useNavigate()
+  const BACKEND_URL=import.meta.env.BACKEND_URL
+
 
   const userData = JSON.parse(localStorage.getItem("user"));
 
@@ -70,17 +72,18 @@ const Chat = () => {
   useEffect(() => {
     const fetch = async () => {
       const receivedChat = await axios.get(
-        `http://localhost:3000/api/chat/getchat/${roomcode}`,
+        `${BACKEND_URL}/api/chat/getchat/${roomcode}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      const data = receivedChat.data;
+      const data = receivedChat?.data;
+      if (data && data.length > 0) {
       const chat = data[0].chat;
-      console.log(chat);
       setMessages([...messages, ...chat]);
+      }
     };
     fetch();
   }, []);
@@ -99,7 +102,7 @@ const Chat = () => {
     console.log(messages);
 
      await axios.post(
-      `http://localhost:3000/api/chat/chatSection/${roomcode}`,
+      `{BACKEND_URL}/api/chat/chatSection/${roomcode}`,
       data,
       {
         headers: {
@@ -112,7 +115,7 @@ const Chat = () => {
   const roomDetails = async () => {
     try {
       const room = await axios.get(
-        `http://localhost:3000/api/room/getParticularRoom/${roomcode}`,
+        `{BACKEND_URL}/api/room/getParticularRoom/${roomcode}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

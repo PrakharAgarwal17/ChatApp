@@ -1,6 +1,9 @@
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000", {
+const BACKEND_URL=import.meta.env.BACKEND_URL
+
+
+const socket = io(`${BACKEND_URL}`, {
     withCredentials: true
 });
 

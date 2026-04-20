@@ -12,7 +12,7 @@ const Chat = () => {
   const [notification, setNotification] = useState("");
   const token = localStorage.getItem("token");
   const navigate=useNavigate()
-  const BACKEND_URL=import.meta.env.BACKEND_URL
+  const BACKEND_URL=import.meta.env.VITE_BACKEND_URL
 
 
   const userData = JSON.parse(localStorage.getItem("user"));

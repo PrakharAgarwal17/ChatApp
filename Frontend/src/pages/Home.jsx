@@ -5,7 +5,7 @@ import axios from "axios";
 export function Home() {
   const navigate = useNavigate();
   const [room, setRoom] = useState([]);
-  const BACKEND_URL=import.meta.env.BACKEND_URL
+  const BACKEND_URL=import.meta.env.VITE_BACKEND_URL
 
   
   const userData = JSON.parse(localStorage.getItem("user"));

@@ -6,7 +6,7 @@ const EnterRoom = () => {
   const navigate = useNavigate();
   const [enteredCode, setenteredCode] = useState("");
   const [status, setStatus] = useState("");
-  const BACKEND_URL=import.meta.env.BACKEND_URL
+  const BACKEND_URL=import.meta.env.VITE_BACKEND_URL
 
 
   const submitHandler = async (e) => {

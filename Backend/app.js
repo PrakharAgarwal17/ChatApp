@@ -13,7 +13,7 @@ import { setupSocketHandlers } from './controllers/socketController.js'
 dotenv.config()
 
 const app = express()
-const frontend = "http://localhost:5173"
+const frontend = process.env.FRONTEND_URL
 
 export const server = http.createServer(app)
 
@@ -33,7 +33,7 @@ connectdb()
 
 // Middlewares
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"],
+    origin: [frontend],
     methods: ['GET', 'POST'],
     credentials: true
 }))
